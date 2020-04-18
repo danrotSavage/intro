@@ -1,0 +1,115 @@
+using System;
+using System.Collections.Generic;
+
+
+public class BoardController
+{
+
+	private Dictionary <string, Board> boards;
+    private userController uController;
+
+
+    public BoardController() 
+    { 
+        boards = new Dictionary <string, Board>();
+    }
+    public Board getBoard(string email)
+    {
+
+        if (boards.ContainsKey(email) & (uController.loggedIn(email)))
+                return boards[email];
+        return null;
+        
+    }
+    public void DeleteBoard(string email)
+    {
+        if (boards.ContainsKey(email))
+            boards.Remove(email);
+        else
+            throw new Exception("could not remove board");
+
+
+
+    }
+    public bool hasBoard(String email)
+    {
+        if (boards.ContainsKey(email))
+            return true;
+     
+        return false;
+        
+    
+    }
+    // check limit
+    public void addTask(string email, string title, string description, DateTime dueDate)
+    {
+
+        if (uController.loggedIn(email))
+        {
+            boards[email].addTask(title, description, dueDate);
+        }
+        throw new Exception("could not add task");
+
+    }
+    public Dictionary<string, Board> Boards
+    {
+        get => boards;
+        set => boards = value;
+    }
+    public void setLimit(string email, int lim, int column)
+    {
+
+        if (uController.loggedIn(email))
+        {
+            if (!boards[email].setLimt(lim, column))
+                throw new Exception("limit can not be lower than amount of tasks.");
+            return;
+        }
+        throw new Exception("user not logged in");
+    }
+    public void UpdateTaskDueDate(string email,int column, int id, DateTime dueDate)
+    {
+        if (uController.loggedIn(email))
+        {
+            if (!boards[email].UpdateTaskDueDate(column, id, dueDate))
+                throw new Exception("task does not exist");
+            return;
+        }
+        throw new Exception("user not logged in");
+
+
+    }
+    public void UpdateTaskTitle(string email,int  column, int id, string title)
+    {
+        if (uController.loggedIn(email))
+        {
+            if (!boards[email].UpdateTaskTitle(column, id, title))
+                throw new Exception("task does not exist");
+            return;
+        }
+        throw new Exception("user not logged in");
+    }
+    public void UpdateTaskDescription(string email, int column, int id, string description)
+    {
+        if (uController.loggedIn(email))
+        {
+            if (!boards[email].UpdateTaskDescription(column, id, description))
+                throw new Exception("task does not exist");
+            return;
+        }
+        throw new Exception("user not logged in");
+    }
+    public void AdvanceTask(string email, int column, int id)
+    {
+        if (uController.loggedIn(email))
+        {
+            if (!boards[email].AdvanceTask(column,id))
+                throw new Exception("task does not exist");
+            return;
+        }
+        throw new Exception("user not logged in");
+    }
+
+
+
+}
